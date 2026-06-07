@@ -1,0 +1,38 @@
+{
+  "name": "page-object-mcp",
+  "version": "0.1.0",
+  "description": "MCP server for managing page objects, elements, and navigation sequences",
+  "type": "module",
+  "bin": {
+    "page-object-mcp": "dist/index.js"
+  },
+  "files": [
+    "dist"
+  ],
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "build": "tsc",
+    "prepare": "tsc",
+    "start": "node dist/index.js",
+    "dev": "tsc --watch",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "typecheck": "tsc --noEmit",
+    "lint": "biome lint .",
+    "format": "biome format --write .",
+    "check": "biome check --write ."
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "1.29.0",
+    "async-mutex": "0.5.0",
+    "zod": "^4.4.3"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "2.3.8",
+    "@types/node": "20.19.42",
+    "typescript": "5.9.3",
+    "vitest": "4.1.8"
+  }
+}
