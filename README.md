@@ -44,7 +44,9 @@ A call to `get_navigation` returns the page URL and that ordered selector chain.
 | **Workspace** | `id`, `name` |
 | **PageObject** | `id`, `workspace`, `name`, `url` |
 | **PageElement** | `id`, `pageObject`, `name`, `selector` |
-| **PageObjectNavigation** | `id`, `pageObject`, `name`, `pageElementIdsNavigation` |
+| **PageObjectNavigation** | `id`, `pageObject`, `name`, `pageElementIdsNavigation` (array of PageElement IDs) |
+
+> **`get_page_object_navigation` returns resolved fields** — instead of raw UUIDs, it returns `pageObjectUrl` (the URL string from the parent PageObject) and `pageElementsNavigation` (ordered array of selector strings). Use `create_page_object_navigation` / `update_page_object_navigation` with the raw `pageElementIdsNavigation` IDs as usual.
 
 **URL patterns** — `PageObject.url` can be an Express-style pattern like `/user/:id`. Use `get_navigation_required_params` to discover which params are needed, then pass them to `get_navigation` to get a resolved URL.
 
@@ -87,8 +89,8 @@ A call to `get_navigation` returns the page URL and that ordered selector chain.
 | Tool | Description |
 |------|-------------|
 | `create_page_object_navigation` | Create a DOM traversal path (ordered chain of elements) |
-| `get_page_object_navigation` | Get by ID |
-| `list_page_object_navigations` | List by page object ID |
+| `get_page_object_navigation` | Get by ID — returns `{ id, name, pageObjectUrl, pageElementsNavigation }` with resolved URL and selectors |
+| `list_page_object_navigations` | List by page object ID (returns raw stored data) |
 | `update_page_object_navigation` | Update name, sequence, or parent |
 | `delete_page_object_navigation` | Delete navigation |
 
@@ -132,7 +134,15 @@ Returns:
      pageElementIdsNavigation: ["el-1", "el-2", "el-3"]  // outermost → target
    }
 
-7. get_navigation({ pageObjectNavigationId: "nav-1" })
+7. get_page_object_navigation({ id: "nav-1" })
+   → {
+       id: "nav-1",
+       name: "Login Input Path",
+       pageObjectUrl: "/login",
+       pageElementsNavigation: ["[data-testid=\"main-form\"]", "#login", "input"]
+     }
+
+8. get_navigation({ pageObjectNavigationId: "nav-1" })
    → {
        urlPattern: "/login",
        selector: "[data-testid=\"main-form\"] #login input"
@@ -166,7 +176,7 @@ All foreign key references are validated on write. If an agent passes a non-exis
 ```bash
 npm install
 npm run build   # tsc → dist/
-npm test        # vitest (28 tests)
+npm test        # vitest (32 tests)
 npm run dev     # tsc --watch
 ```
 

@@ -249,11 +249,28 @@ export function registerCrudTools(server: McpServer, store: Store): void {
 
   server.registerTool(
     'get_page_object_navigation',
-    { description: 'Get a page object navigation by ID', inputSchema: { id: z.string() } },
+    {
+      description:
+        'Get a page object navigation by ID. Returns resolved values: pageObjectUrl (URL from the parent page object) and pageElementsNavigation (ordered list of selectors resolved from element IDs).',
+      inputSchema: { id: z.string() },
+    },
     async ({ id }) => {
       const nav = store.getPageObjectNavigation(id);
       if (!nav) return err(new NotFoundError(`PageObjectNavigation "${id}" not found`));
-      return ok(nav);
+      const po = store.getPageObject(nav.pageObject);
+      if (!po) return err(new NotFoundError(`PageObject "${nav.pageObject}" not found`));
+      const selectors: string[] = [];
+      for (const elId of nav.pageElementIdsNavigation) {
+        const el = store.getPageElement(elId);
+        if (!el) return err(new NotFoundError(`PageElement "${elId}" not found`));
+        selectors.push(el.selector);
+      }
+      return ok({
+        id: nav.id,
+        name: nav.name,
+        pageObjectUrl: po.url,
+        pageElementsNavigation: selectors,
+      });
     },
   );
 

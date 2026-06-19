@@ -5,3 +5,4 @@ _bmad/
 .agents/
 .claude/
 dist/
+.DS_Store

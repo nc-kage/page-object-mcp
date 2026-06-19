@@ -1,6 +1,6 @@
 {
   "name": "page-object-mcp",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "MCP server for managing page objects, elements, and navigation sequences",
   "type": "module",
   "bin": {
